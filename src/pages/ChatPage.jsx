@@ -1,7 +1,8 @@
 import React from "react";
+import Chats from "../components/Chats";
 
 function ChatPage() {
-  return <div>ChatPage</div>;
+  return <Chats />;
 }
 
 export default ChatPage;
