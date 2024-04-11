@@ -1,17 +1,20 @@
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { messagesConst, userConst } from "../utils/constants";
 import { AuthContext } from "../context/AuthContext";
 import moment from "moment";
 import InputEmoji from "react-input-emoji";
 import { FiSend } from "react-icons/fi";
+import { ChatContext } from "../context/ChatContext";
 
 function Messages({ currentChat }) {
   const [chatMessages, setChatMessages] = useState([]);
   const { user } = useContext(AuthContext);
+  const { socket } = useContext(ChatContext);
   const partnerId = currentChat?.members.find((id) => id !== user?.id);
   const [partnerUser, setPartner] = useState(null);
   const [text, setText] = useState("");
+  const scroll = useRef();
 
   const handleSendMessage = async () => {
     const payload = {
@@ -27,6 +30,10 @@ function Messages({ currentChat }) {
         data.ownMessage = true;
         setChatMessages((prev) => [...prev, data]);
         setText("");
+
+        if (socket !== null) {
+          socket.emit("sendMessage", { data, partnerId: partnerUser?._id });
+        }
       }
     } catch (e) {
       console.log(e);
@@ -62,7 +69,23 @@ function Messages({ currentChat }) {
   useEffect(() => {
     fetchChatMessages();
     fetchPartnerUser();
+
+    if (socket !== null) {
+      socket.on("getMessage", (response) => {
+        const newMessage = { ...response.data, ownMessage: false };
+
+        setChatMessages((prev) => [...prev, newMessage]);
+      });
+
+      return () => {
+        socket.off("getMessage");
+      };
+    }
   }, [currentChat]);
+
+  useEffect(() => {
+    scroll.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessages]);
 
   return (
     <div className="bg-white rounded-md shadow-lg m-4">
@@ -70,11 +93,15 @@ function Messages({ currentChat }) {
         {partnerUser?.name}
       </div>
 
-      <div className="p-4">
+      <div className="p-4 max-h-96 h-96 overflow-y-scroll">
         {chatMessages.length > 0 &&
           chatMessages.map((message) =>
             message.ownMessage ? (
-              <div className="flex items-center justify-end" key={message._id}>
+              <div
+                className="flex items-center justify-end"
+                key={message._id}
+                ref={scroll}
+              >
                 <span className="text-xs text-gray-500">
                   {moment(message.createdAt).format("h:mm A")}
                 </span>
@@ -83,7 +110,7 @@ function Messages({ currentChat }) {
                 </div>
               </div>
             ) : (
-              <div className="flex items-center" key={message._id}>
+              <div className="flex items-center" key={message._id} ref={scroll}>
                 <div className="flex-shrink-0 max-w-1/2 bg-purple-400 text-white rounded-full m-2 px-6 py-2">
                   <p>{message.text}</p>
                 </div>
@@ -102,7 +129,7 @@ function Messages({ currentChat }) {
           onChange={setText}
           cleanOnEnter
           onEnter={handleSendMessage}
-          placeholder
+          placeholder={"Message"}
         />
 
         <button

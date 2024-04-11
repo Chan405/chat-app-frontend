@@ -46,7 +46,7 @@ function Chats() {
         </div>
 
         <div className="w-2/3">
-          <Messages currentChat={currentChat} />
+          {currentChat && <Messages currentChat={currentChat} />}
         </div>
       </div>
     </div>
