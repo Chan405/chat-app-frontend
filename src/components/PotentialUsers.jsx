@@ -5,24 +5,8 @@ import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
 
 function PotentialUsers({ refetch }) {
-  const [potentialUsers, setPotentialUsers] = useState([]);
   const { user } = useContext(AuthContext);
-  const { onlineUsers } = useContext(ChatContext);
-
-  const fetchPotentialUsers = async () => {
-    try {
-      const { data } = await axios.get(userConst);
-      const tmp = data.users.filter((u) => u._id !== user.id);
-
-      setPotentialUsers(tmp);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  useEffect(() => {
-    fetchPotentialUsers();
-  }, []);
+  const { onlineUsers, potentialUsers } = useContext(ChatContext);
 
   const createChat = async (firstId, secondId) => {
     try {

@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import Notification from "./Notification";
 
 function Navbar() {
   const { user, setUser } = useContext(AuthContext);
@@ -16,6 +17,7 @@ function Navbar() {
       </Link>
 
       <div className="flex gap-4">
+        <Notification />
         {!user ? (
           <Link to="/login"> Login </Link>
         ) : (

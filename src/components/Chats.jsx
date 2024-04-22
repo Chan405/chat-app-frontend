@@ -5,30 +5,15 @@ import { chatConst, messagesConst } from "../utils/constants";
 import UserChat from "./UserChat";
 import PotentialUsers from "./PotentialUsers";
 import Messages from "./Messages";
+import { ChatContext } from "../context/ChatContext";
 
 function Chats() {
-  const [userChats, setUserChats] = useState(null);
-  const [currentChat, setCurrentChat] = useState(null);
-
-  const { user } = useContext(AuthContext);
-  const fetchUserChats = async () => {
-    if (user) {
-      try {
-        const { data } = await axios.get(`${chatConst}/${user.id}`);
-        setUserChats(data);
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  };
+  const { currentChat, setCurrentChat, userChats, fetchUserChats } =
+    useContext(ChatContext);
 
   const handleCurrentChat = (chat) => {
     setCurrentChat(chat);
   };
-
-  useEffect(() => {
-    fetchUserChats();
-  }, [user]);
 
   return (
     <div>
