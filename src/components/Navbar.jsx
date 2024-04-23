@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import Notification from "./Notification";
+import { profileConst } from "../utils/constants";
 
 function Navbar() {
   const { user, setUser } = useContext(AuthContext);
@@ -16,20 +17,25 @@ function Navbar() {
         <h2 className="text-xl"> Channie Chat </h2>
       </Link>
 
-      <div className="flex gap-4">
+      <div className="flex items-center gap-4">
         <Notification />
         {!user ? (
           <Link to="/login"> Login </Link>
         ) : (
           <Link to="/login" onClick={handleLogout}>
-            {" "}
-            Logout{" "}
+            Logout
           </Link>
         )}
         {!user ? (
           <Link to="/register"> Register </Link>
         ) : (
-          <Link to="/"> {user?.name} </Link>
+          <Link to="/" className="flex items-center gap-4">
+            <img
+              src={`${profileConst}/${user.profilePic}`}
+              className="w-10 h-10 rounded-full object-cover"
+            />
+            {user?.name}
+          </Link>
         )}
       </div>
     </div>

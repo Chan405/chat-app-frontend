@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { messagesConst, userConst } from "../utils/constants";
+import { messagesConst, profileConst, userConst } from "../utils/constants";
 import { AuthContext } from "../context/AuthContext";
 import moment from "moment";
 import InputEmoji from "react-input-emoji";
@@ -108,9 +108,18 @@ function Messages({ currentChat }) {
                 <div className="flex-shrink-0 max-w-1/2 bg-purple-400 text-white rounded-full m-2 px-6 py-2">
                   <p>{message.text}</p>
                 </div>
+
+                <img
+                  src={`${profileConst}/${user?.profilePic}`}
+                  className="w-6 h-6 rounded-full object-cover"
+                />
               </div>
             ) : (
               <div className="flex items-center" key={message._id} ref={scroll}>
+                <img
+                  src={`${profileConst}/${partnerUser?.photo}`}
+                  className="w-6 h-6 rounded-full object-cover"
+                />
                 <div className="flex-shrink-0 max-w-1/2 bg-purple-400 text-white rounded-full m-2 px-6 py-2">
                   <p>{message.text}</p>
                 </div>

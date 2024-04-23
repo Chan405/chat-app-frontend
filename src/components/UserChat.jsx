@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
-import { userConst } from "../utils/constants";
+import { profileConst, userConst } from "../utils/constants";
 import { ChatContext } from "../context/ChatContext";
 
 function UserChat({ chat, handleCurrentChat }) {
@@ -24,16 +24,22 @@ function UserChat({ chat, handleCurrentChat }) {
   useEffect(() => {
     fetchPartnerUser();
   }, [chat]);
+
   return (
     <div
       className="flex items-center gap-3 bg-white shadow-md rounded-md px-3 py-2 m-4 cursor-pointer"
       onClick={() => handleCurrentChat(chat)}
     >
-      <div className="w-11 h-11 rounded-full bg-fuchsia-500 text-white font-bold flex items-center justify-center relative">
-        {partnerUser?.name[0].toUpperCase()}
+      <div className=" relative">
+        {/* {partnerUser?.name[0].toUpperCase()} */}
+
+        <img
+          src={`${profileConst}/${partnerUser?.photo}`}
+          className="w-14 h-14 rounded-full object-cover"
+        />
 
         {isOnline && (
-          <div className="w-2 h-2 rounded-full bg-green-500 absolute bottom-1 right-1"></div>
+          <div className="w-3 h-3 rounded-full bg-green-500 absolute bottom-1 right-1"></div>
         )}
       </div>
 

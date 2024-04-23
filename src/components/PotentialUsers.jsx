@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { chatConst, userConst } from "../utils/constants";
+import { chatConst, profileConst, userConst } from "../utils/constants";
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
 
@@ -28,15 +28,18 @@ function PotentialUsers({ refetch }) {
             className="cursor-pointer"
             onClick={() => createChat(pUser._id, user.id)}
           >
-            <div className="w-11 h-11 rounded-full bg-fuchsia-500 text-white font-bold flex items-center justify-center relative">
-              {pUser?.name[0].toUpperCase()}
+            <div className="  relative">
+              <img
+                src={`${profileConst}/${pUser.photo}`}
+                className="w-14 h-14 rounded-full object-cover"
+              />
               {onlineUsers.some(
                 (onlineUser) => onlineUser.userId === pUser._id
               ) && (
                 <div className="w-3 h-3 rounded-full bg-green-600 absolute bottom-1 right-0"></div>
               )}
             </div>
-            <p> {pUser.name}</p>
+            <p className="text-center"> {pUser.name}</p>
           </div>
         ))}
     </div>
