@@ -44,7 +44,7 @@ function UserChat({ chat, handleCurrentChat }) {
       </div>
 
       <div>
-        {partnerUser?.name} <p> Message </p>
+        {chat.groupName ? chat.groupName : partnerUser?.name} <p> Message </p>
       </div>
     </div>
   );

@@ -88,7 +88,7 @@ function Messages({ currentChat }) {
   }, [chatMessages]);
 
   return (
-    <div className="bg-white rounded-md shadow-lg m-4">
+    <div className="bg-white rounded-md shadow-lg m-4 -mt-14">
       <div className="bg-purple-400 text-white text-center text-xl font-bold py-2 rounded-t-md">
         {partnerUser?.name}
       </div>
