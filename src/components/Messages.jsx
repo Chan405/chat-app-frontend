@@ -3,9 +3,10 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { messagesConst, profileConst, userConst } from "../utils/constants";
 import { AuthContext } from "../context/AuthContext";
 import moment from "moment";
-import InputEmoji from "react-input-emoji";
-import { FiSend } from "react-icons/fi";
 import { ChatContext } from "../context/ChatContext";
+import MessageInput from "./MessageInput";
+import SingleOwnMessage from "./SingleOwnMessage";
+import SingleMessage from "./SingleMessage";
 
 function Messages({ currentChat }) {
   const [chatMessages, setChatMessages] = useState([]);
@@ -14,6 +15,8 @@ function Messages({ currentChat }) {
   const partnerId = currentChat?.members.find((id) => id !== user?.id);
   const [partnerUser, setPartner] = useState(null);
   const [text, setText] = useState("");
+  const [memberData, setMemberData] = useState({});
+
   const scroll = useRef();
 
   const handleSendMessage = async () => {
@@ -87,67 +90,61 @@ function Messages({ currentChat }) {
     scroll.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatMessages]);
 
+  const fetchMemberData = async (memberIds) => {
+    try {
+      const promises = memberIds.map(async (id) => {
+        const { data } = await axios.get(`${userConst}/${id}`);
+        // console.log("data fetch", data);
+        return data.user;
+      });
+      const userData = await Promise.all(promises);
+      // console.log({ userData });
+      const memberDataObj = userData.reduce((acc, user) => {
+        acc[user._id] = user;
+        return acc;
+      }, {});
+      setMemberData(memberDataObj);
+    } catch (error) {
+        console.error("Error fetching member data:", error);
+    }
+  };
+
+  useEffect(() => {
+    const memberIds = chatMessages.map((message) => message.sendId);
+    const uniqueMemberIds = [...new Set(memberIds)];
+    // Fetch member data
+
+    // console.log({ uniqueMemberIds });
+    fetchMemberData(uniqueMemberIds);
+  }, [chatMessages]);
+
   return (
     <div className="bg-white rounded-md shadow-lg m-4 -mt-14">
       <div className="bg-purple-400 text-white text-center text-xl font-bold py-2 rounded-t-md">
-        {partnerUser?.name}
+        { currentChat?.groupName ? currentChat?.groupName : partnerUser?.name}
       </div>
 
       <div className="p-4 max-h-96 h-96 overflow-y-scroll">
         {chatMessages.length > 0 &&
           chatMessages.map((message) =>
             message.ownMessage ? (
-              <div
-                className="flex items-center justify-end"
-                key={message._id}
-                ref={scroll}
-              >
-                <span className="text-xs text-gray-500">
-                  {moment(message.createdAt).format("h:mm A")}
-                </span>
-                <div className="flex-shrink-0 max-w-1/2 bg-purple-400 text-white rounded-full m-2 px-6 py-2">
-                  <p>{message.text}</p>
-                </div>
-
-                <img
-                  src={`${profileConst}/${user?.profilePic}`}
-                  className="w-6 h-6 rounded-full object-cover"
-                />
-              </div>
+              <SingleOwnMessage scroll={scroll} message={message} />
             ) : (
-              <div className="flex items-center" key={message._id} ref={scroll}>
-                <img
-                  src={`${profileConst}/${partnerUser?.photo}`}
-                  className="w-6 h-6 rounded-full object-cover"
-                />
-                <div className="flex-shrink-0 max-w-1/2 bg-purple-400 text-white rounded-full m-2 px-6 py-2">
-                  <p>{message.text}</p>
-                </div>
-
-                <span className="text-xs text-gray-500">
-                  {moment(message.createdAt).format("h:mm A")}
-                </span>
-              </div>
+              <SingleMessage
+                scroll={scroll}
+                message={message}
+                partnerUser={partnerUser}
+                photo={`${profileConst}/${memberData[message.sendId]?.photo}`}
+              />
             )
           )}
       </div>
 
-      <div className="flex mb-4">
-        <InputEmoji
-          value={text}
-          onChange={setText}
-          cleanOnEnter
-          onEnter={handleSendMessage}
-          placeholder={"Message"}
-        />
-
-        <button
-          className="mr-4 my-2 bg-purple-400 text-white px-4 rounded-xl "
-          onClick={handleSendMessage}
-        >
-          <FiSend className="text-xl" />
-        </button>
-      </div>
+      <MessageInput
+        text={text}
+        setText={setText}
+        handleSendMessage={handleSendMessage}
+      />
     </div>
   );
 }
