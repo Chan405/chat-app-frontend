@@ -5,11 +5,10 @@ import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
 import { IoMdPeople } from "react-icons/io";
 import CreateGroupModal from "./CreateGroupModal";
-import { errorHandler } from "../utils/errorHandler";
 
 function PotentialUsers({ refetch }) {
   const { user } = useContext(AuthContext);
-  const { onlineUsers, potentialUsers } = useContext(ChatContext);
+  const { onlineUsers, potentialUsers, setCurrentChat  } = useContext(ChatContext);
   const [searchQuery, setSearchQuery] = useState("");
   const [open, setOpen] = React.useState(false);
 
@@ -28,7 +27,11 @@ function PotentialUsers({ refetch }) {
         refetch();
       }
     } catch (e) {
-      errorHandler(e)
+      // errorHandler(e)
+      if(e?.response && e?.response?.data && e?.response?.data?.existingChat) {
+        const currentChat = e?.response?.data?.existingChat
+        setCurrentChat(currentChat)
+      }
     }
   };
 

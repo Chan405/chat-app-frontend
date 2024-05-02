@@ -76,6 +76,7 @@ function Messages({ currentChat }) {
 
     if (socket !== null) {
       socket.on("getMessage", (response) => {
+        if(response.data.chatId !== currentChat._id) return
         const newMessage = { ...response.data, ownMessage: false };
 
         setChatMessages((prev) => [...prev, newMessage]);
