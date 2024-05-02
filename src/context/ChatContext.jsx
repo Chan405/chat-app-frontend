@@ -3,6 +3,7 @@ import { io } from "socket.io-client";
 import { AuthContext } from "./AuthContext";
 import axios from "axios";
 import { chatConst, userConst } from "../utils/constants";
+import { errorHandler } from "../utils/errorHandler";
 
 export const ChatContext = createContext();
 
@@ -57,7 +58,7 @@ export const ChatContextProvider = ({ children }) => {
         const { data } = await axios.get(`${chatConst}/${user.id}`);
         setUserChats(data);
       } catch (e) {
-        console.log(e);
+       errorHandler(e)
       }
     }
   };
@@ -70,7 +71,7 @@ export const ChatContextProvider = ({ children }) => {
 
       setPotentialUsers(tmp);
     } catch (e) {
-      console.log(e);
+      errorHandler(e)
     }
   };
 

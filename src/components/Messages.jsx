@@ -7,6 +7,7 @@ import { ChatContext } from "../context/ChatContext";
 import MessageInput from "./MessageInput";
 import SingleOwnMessage from "./SingleOwnMessage";
 import SingleMessage from "./SingleMessage";
+import { errorHandler } from "../utils/errorHandler";
 
 function Messages({ currentChat }) {
   const [chatMessages, setChatMessages] = useState([]);
@@ -39,7 +40,7 @@ function Messages({ currentChat }) {
         }
       }
     } catch (e) {
-      console.log(e);
+      errorHandler(e)
     }
   };
 
@@ -65,7 +66,7 @@ function Messages({ currentChat }) {
         setChatMessages(tmp);
       }
     } catch (e) {
-      console.log(e);
+      errorHandler(e)
     }
   };
 
@@ -104,8 +105,8 @@ function Messages({ currentChat }) {
         return acc;
       }, {});
       setMemberData(memberDataObj);
-    } catch (error) {
-        console.error("Error fetching member data:", error);
+    } catch (e) {
+        errorHandler(e)
     }
   };
 

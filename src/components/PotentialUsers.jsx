@@ -3,13 +3,16 @@ import React, { useContext, useEffect, useState } from "react";
 import { chatConst, profileConst, userConst } from "../utils/constants";
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
+import { IoMdPeople } from "react-icons/io";
+import CreateGroupModal from "./CreateGroupModal";
+import { errorHandler } from "../utils/errorHandler";
 
 function PotentialUsers({ refetch }) {
   const { user } = useContext(AuthContext);
   const { onlineUsers, potentialUsers } = useContext(ChatContext);
   const [searchQuery, setSearchQuery] = useState("");
+  const [open, setOpen] = React.useState(false);
 
-  // Function to handle search input change
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value);
   };
@@ -25,19 +28,29 @@ function PotentialUsers({ refetch }) {
         refetch();
       }
     } catch (e) {
-      console.log(e);
+      errorHandler(e)
     }
   };
 
   return (
     <div>
-      <input
-        type="text"
-        value={searchQuery}
-        onChange={handleSearchInputChange}
-        placeholder="Search users..."
-        className=" w-1/4 h-12 border border-purple-600 rounded px-3 py-1 m-4"
-      />
+      <div className="flex items-center gap-4 ml-4 mt-4">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={handleSearchInputChange}
+          placeholder="Search users..."
+          className=" w-1/4 h-12 border border-purple-600 rounded px-3 py-1 "
+        />
+
+        <div
+          className="w-12 h-12 flex items-center justify-center bg-white rounded-full"
+          onClick={() => setOpen(true)}
+        >
+          {" "}
+          <IoMdPeople className="text-purple-700 text-2xl cursor-pointer" />{" "}
+        </div>
+      </div>
 
       <div className="flex gap-4 m-3">
         {filteredUsers.length === 0 && <p> No users found</p>}
@@ -63,6 +76,8 @@ function PotentialUsers({ refetch }) {
             </div>
           ))}
       </div>
+
+      <CreateGroupModal open={open} setOpen={setOpen} refetch={refetch} />
     </div>
   );
 }

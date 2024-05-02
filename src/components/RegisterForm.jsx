@@ -3,6 +3,8 @@ import axios from "axios";
 import { userConst } from "../utils/constants";
 import { useNavigate } from "react-router-dom";
 import { FaUserEdit } from "react-icons/fa";
+import { toast } from "react-toastify";
+import { errorHandler } from "../utils/errorHandler";
 
 function RegisterForm() {
   const navigate = useNavigate();
@@ -47,7 +49,7 @@ function RegisterForm() {
 
       if (data) navigate("/login");
     } catch (error) {
-      console.error("Error registering user:", error.response.data);
+      errorHandler(e)
     }
   };
 

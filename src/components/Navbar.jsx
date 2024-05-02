@@ -18,7 +18,7 @@ function Navbar() {
       </Link>
 
       <div className="flex items-center gap-4">
-        <Notification />
+        {user && <Notification />}
         {!user ? (
           <Link to="/login"> Login </Link>
         ) : (

@@ -3,6 +3,7 @@ import { json, useNavigate } from "react-router-dom";
 import { userConst } from "./../utils/constants";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
+import { errorHandler } from "../utils/errorHandler";
 
 function LoginForm() {
   const navigate = useNavigate();
@@ -28,8 +29,8 @@ function LoginForm() {
         localStorage.setItem("USER", JSON.stringify(data.user));
         setUser(data.user);
       }
-    } catch (error) {
-      console.error("Error registering user:", error.response.data);
+    } catch (e) {
+      errorHandler(e)
     }
   };
   return (

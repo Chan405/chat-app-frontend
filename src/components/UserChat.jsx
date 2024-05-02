@@ -3,6 +3,7 @@ import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { profileConst, userConst } from "../utils/constants";
 import { ChatContext } from "../context/ChatContext";
+import { IoMdPeople } from "react-icons/io";
 
 function UserChat({ chat, handleCurrentChat }) {
   const { user } = useContext(AuthContext);
@@ -33,10 +34,19 @@ function UserChat({ chat, handleCurrentChat }) {
       <div className=" relative">
         {/* {partnerUser?.name[0].toUpperCase()} */}
 
-        <img
-          src={`${profileConst}/${partnerUser?.photo}`}
-          className="w-14 h-14 rounded-full object-cover"
-        />
+        {chat.groupName ? (
+          <div
+            className="w-12 h-12 flex items-center justify-center bg-white rounded-full"
+            
+          >
+            <IoMdPeople className="text-purple-700 text-2xl cursor-pointer" />
+          </div>
+        ) : (
+          <img
+            src={`${profileConst}/${partnerUser?.photo}`}
+            className="w-14 h-14 rounded-full object-cover"
+          />
+        )}
 
         {isOnline && (
           <div className="w-3 h-3 rounded-full bg-green-500 absolute bottom-1 right-1"></div>
